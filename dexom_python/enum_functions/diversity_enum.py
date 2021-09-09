@@ -57,7 +57,8 @@ def diversity_enum(model, reaction_weights, prev_sol, thr=1e-5, eps=1e-2, obj_to
     """
     times = []
     selected_recs = []
-    prev_sol_bin = get_binary_sol(prev_sol, thr)
+    # prev_sol_bin = get_binary_sol(prev_sol, thr)
+    prev_sol_bin = list(prev_sol.fluxes.values()) #We provide already binarized solutions
     all_solutions = [prev_sol]
     all_binary = [prev_sol_bin]
     icut_constraints = []
@@ -87,7 +88,6 @@ def diversity_enum(model, reaction_weights, prev_sol, thr=1e-5, eps=1e-2, obj_to
         tempweights = {}
         i = 0
         for rid, weight in six.iteritems(reaction_weights):
-            rid_loc = prev_sol.fluxes.index.get_loc(rid)
             if np.random.random() > dist_anneal**idx and weight != 0:
                 tempweights[rid] = weight
                 i += 1
@@ -178,9 +178,11 @@ if __name__ == "__main__":
     a = args.dist_anneal
     if "." in args.prev_sol:
         prev_sol, prev_bin = read_solution(args.prev_sol, model, reaction_weights)
+        prev_sol.fluxes = dict(prev_sol.fluxes.fluxes)
         model = create_partial_variables(model, reaction_weights, epsilon=args.epsilon)
     elif args.prev_sol:
         prev_sol, i = get_recent_solution_and_iteration(args.prev_sol, args.startsol_num)
+        prev_sol.fluxes = dict(prev_sol.fluxes.fluxes)
         a = a ** i
         model = create_partial_variables(model, reaction_weights, epsilon=args.epsilon)
     else:

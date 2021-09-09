@@ -55,7 +55,13 @@ def rxn_enum(model, reaction_weights, rxn_list, prev_sol, eps=1., thr=1e-1, tlim
     unique_solutions_binary = [prev_sol_bin]
     all_reactions = []  # for each solution, save which reaction was activated/inactived by the algorithm
     unique_reactions = []
-
+    try:
+        model.solver = 'cplex'
+        model.solver.configuration.presolve = True
+        model.solver.problem.parameters.threads.set(1)
+        print(model.solver.problem.parameters.threads)
+    except:
+        print("cplex is not available or not properly installed")
     if not rxn_list:
         rxns = list(model.reactions)
         rxn_list = [r.id for r in rxns]
@@ -159,7 +165,7 @@ if __name__ == "__main__":
     parser.add_argument("--obj_tol", type=float, default=1e-3,
                         help="objective value tolerance, as a fraction of the original value")
     parser.add_argument("-o", "--output", default="rxn_enum", help="Path of output files, without format")
-    parser.add_argument("--save", action="store_true", help="Use this flag to save each solution individually")
+    parser.add_argument("--save", action="store_true", default = False, help="Use this flag to save each solution individually")
     args = parser.parse_args()
 
     fileformat = Path(args.model).suffix
@@ -175,6 +181,8 @@ if __name__ == "__main__":
 
     try:
         model.solver = 'cplex'
+        model.solver.configuration.presolve = True
+        model.solver.problem.parameters.threads=1
     except:
         print("cplex is not available or not properly installed")
 

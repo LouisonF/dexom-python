@@ -76,10 +76,13 @@ def read_solution(filename, model=None, reaction_weights=None):
             objective_value = float(reader[-2].split()[-1])
             status = reader[-1].split()[-1]
     if binary:
-        fluxes = pd.read_csv(filename, index_col=0).rename(index={0: "fluxes"}).T
+        # fluxes = pd.read_csv(filename, index_col=0).rename(index={0: "fluxes"}).T
+        fluxes = pd.read_csv(filename, index_col=0)
+        fluxes.index=['fluxes']
+        fluxes = fluxes.T
         fluxes.index = [rxn.id for rxn in model.reactions]
         sol_bin = list(fluxes["fluxes"])
-        objective_value = get_obj_value_from_binary(sol_bin, model, reaction_weights)
+        objective_value = get_obj_value_from_binary(sol_bin,reaction_weights)
         status = "binary"
     else:
         df = pd.read_csv(filename, index_col=0, skipfooter=2, engine="python")

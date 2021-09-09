@@ -63,7 +63,7 @@ def create_maxdist_objective(model, reaction_weights, prev_sol, prev_sol_bin, on
     if full:
         for rxn in model.reactions:
             rid = rxn.id
-            rid_loc = prev_sol.fluxes.index.get_loc(rid)
+            rid_loc = list(prev_sol.fluxes.keys()).index(rid)
             x = model.solver.variables["x_" + rid]
             if prev_sol_bin[rid_loc] == 1:
                 expr += x
@@ -71,7 +71,7 @@ def create_maxdist_objective(model, reaction_weights, prev_sol, prev_sol_bin, on
                 expr += 1 - x
     else:
         for rid, weight in six.iteritems(reaction_weights):
-            rid_loc = prev_sol.fluxes.index.get_loc(rid)
+            rid_loc = list(prev_sol.fluxes.keys()).index(rid)
             if weight > 0:
                 y_neg = model.solver.variables["rh_" + rid + "_neg"]
                 y_pos = model.solver.variables["rh_" + rid + "_pos"]

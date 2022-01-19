@@ -39,7 +39,7 @@ def write_rxn_enum_script(batch_directory,output_directory, modelfile, weightfil
                     '#SBATCH -t 05:00:00\n#SBATCH -J rxn_%i\n#SBATCH -o rxnout_%i.out\n#SBATCH -e rxnerr_%i.out\n'
                     % (i, i, i))
             f.write('python ~/save/softs/dexom-python/dexom_python/enum_functions/rxn_enum.py -o %s/rxn_enum_%s_%i --range %i_%i -m %s -r %s -l %s -p %s '
-                    '-t 6000 \n' % (output_directory,barcode, i, i*iters, i*iters+iters, modelfile, weightfile, reactionlist,
+                    '-t 600 --mipgap 1e-2 \n' % (output_directory,barcode, i, i*iters, i*iters+iters, modelfile, weightfile, reactionlist,
                                           imatsol))
     with open(batch_directory+"/runfiles.sh", "w+") as f:
         f.write('#!/bin/bash\n#SBATCH -J runfiles\n#SBATCH -o runout.out\n#SBATCH '
@@ -55,7 +55,7 @@ def write_rxn_enum_script_local(batch_directory,output_directory, modelfile, wei
     for i in range(rxn_num):
         with open(batch_directory+"/file_" + str(i) + ".sh", "w+") as f:
             f.write('python ~/Documents/softs/dexom-python/dexom_python/enum_functions/rxn_enum.py -o %s/rxn_enum_%s_%i --range %i_%i -m %s -r %s -l %s -p %s '
-                    '-t 6000 \n' % (output_directory,barcode, i, i*iters, i*iters+iters, modelfile, weightfile, reactionlist,
+                    '-t 6000 --mipgap 1e-2 \n' % (output_directory,barcode, i, i*iters, i*iters+iters, modelfile, weightfile, reactionlist,
                                           imatsol))
     with open(batch_directory+"/runfiles.sh", "w+") as f:
         f.write('#!/bin/bash\n#SBATCH --mail-type=ALL\n#SBATCH -J runfiles\n#SBATCH -o runout.out\n#SBATCH '
